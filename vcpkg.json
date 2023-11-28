@@ -1,0 +1,13 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+    "name": "gds",
+    "version": "0.0.1",
+    "description": "plasma physics emulator",
+    "builtin-baseline": "fe1e9f508ee13ed3d0a7d318beac7efe1ec4f9d7",
+    "dependencies": [
+        "gtest",
+        "eigen3",
+        "benchmark",
+        "backward-cpp"
+    ]
+}
