@@ -1,18 +1,11 @@
 #pragma once
 
-namespace gds {
+namespace gds::utils {
 
 class Monitor {
- private:
-  /* data */
  public:
-  Monitor(/* args */);
-  ~Monitor();
-  void PrintConfig();
+  static void PrintConfig();
+  static void PrintInfo();
 };
 
-Monitor::Monitor(/* args */) {}
-
-Monitor::~Monitor() {}
-
-}  // namespace gds
+}  // namespace gds::utils

@@ -28,14 +28,20 @@ enum class ParticelType {
 
 class Fluid {
  public:
-  std::unordered_map<ParticelType, Matrix> n;   // 粒子密度
-  std::unordered_map<ParticelType, Matrix> ux;  // x 方向粒子迁移速度
-  std::unordered_map<ParticelType, Matrix> uy;  // y 方向粒子迁移速度
-  std::unordered_map<ParticelType, Matrix> Jx;  // x 方向粒子流密度
-  std::unordered_map<ParticelType, Matrix> Jy;  // y 方向粒子流密度
-  std::unordered_map<ParticelType, Matrix> Dx;  // x 方向粒子的扩散系数
-  std::unordered_map<ParticelType, Matrix> Dy;  // y 方向粒子的扩散系数
-  std::unordered_map<ParticelType, Matrix> S;   // 源项
+  std::unordered_map<ParticelType, Matrix> n;       // 粒子密度
+  std::unordered_map<ParticelType, Matrix> ux;      // x 方向粒子迁移速度
+  std::unordered_map<ParticelType, Matrix> uy;      // y 方向粒子迁移速度
+  std::unordered_map<ParticelType, Matrix> Jx;      // x 方向粒子流密度
+  std::unordered_map<ParticelType, Matrix> Jy;      // y 方向粒子流密度
+  std::unordered_map<ParticelType, Matrix> Dx;      // x 方向粒子的扩散系数
+  std::unordered_map<ParticelType, Matrix> Dy;      // y 方向粒子的扩散系数
+  Matrix                                   Ix, Iy;  // x, y 方向的电流
+  std::unordered_map<ParticelType, Matrix> S;       // 源项
+  Matrix                                   Sener;   // 能量源项
+
+  // 下面两个量只有正离子才有
+  std::unordered_map<ParticelType, Matrix> Zx;  // 用于计算五点系数的耦合量
+  std::unordered_map<ParticelType, Matrix> Zy;  // 用于计算五点系数的耦合量
 
   // 以下是各粒子的五点系数
   std::unordered_map<ParticelType, Matrix> AW;
@@ -44,14 +50,20 @@ class Fluid {
   std::unordered_map<ParticelType, Matrix> AN;
   std::unordered_map<ParticelType, Matrix> AE;
 
-  std::vector<Matrix> Kh;  // 各反应的反应速率系数
-  std::vector<Matrix> Kr;  // 各反应的反应速率系数
-  std::vector<Matrix> Ki;  // 各反应的反应速率系数
-  std::vector<Matrix> Ei;  // 各反应的反应速率系数
+  std::vector<Matrix> Kh;   // 各反应的反应速率系数
+  std::vector<Matrix> Kr;   // 各反应的反应速率系数
+  std::vector<Matrix> Ki;   // 各反应的反应速率系数
+  std::vector<Matrix> Ei;   // 各反应的反应速率系数
+  Matrix              Kte;  // 电子的初始能量密度
 
+  Matrix phi;        // 电势
+  Matrix E, Ex, Ey;  // 电场强度
  public:
   Fluid();
-  ~Fluid();
+  ~Fluid() = default;
+
+ private:
+  void init();
 };
 
 }  // namespace gds

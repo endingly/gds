@@ -17,12 +17,14 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
 endif()
 
 find_package(Eigen3 CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)
 add_library(${PROJECT_NAME}_lib ${SOURCES})
 target_include_directories(${PROJECT_NAME}_lib PUBLIC include)
 target_link_libraries(
     ${PROJECT_NAME}_lib PUBLIC
     Eigen3::Eigen
     $<$<CONFIG:Debug>:Backward::Backward>
+    fmt::fmt
 )
 
 # target gds executable
