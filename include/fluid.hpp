@@ -63,7 +63,11 @@ class Fluid {
   ~Fluid() = default;
 
  private:
+  /// @brief 初始化边界条件
   void init();
+
+ public:
+  friend class Solver;
 };
 
 }  // namespace gds

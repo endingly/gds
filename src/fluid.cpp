@@ -5,6 +5,7 @@ using namespace gds::config;
 
 constexpr double init_density = 1.0E5;  // 1.0E5 cm^-3
 
+
 gds::Fluid::Fluid() {
   for (ParticelType p = ParticelType::O2; p <= ParticelType::C; p = ParticelType(int(p) + 1)) {
     // 初始化粒子密度
