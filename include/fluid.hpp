@@ -58,6 +58,8 @@ class Fluid {
 
   Matrix phi;        // 电势
   Matrix E, Ex, Ey;  // 电场强度
+
+  double dx, dy;  // 网格尺寸
  public:
   Fluid();
   ~Fluid() = default;

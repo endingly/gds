@@ -1,7 +1,6 @@
-#include <iostream>
+#include <stdexcept>
 
-int main(int argc, char const *argv[])
-{
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+int main(void) {
+  throw std::runtime_error("Hello, world!");
+  return 0;
 }
