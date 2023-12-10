@@ -18,5 +18,6 @@ TEST(Init_Diagonal_Matrix, Tri_Diag_Matrix) {
   gds::ESM sparse_matrix(5, 5);
   gds::utils::Set_Matrix_Diagonal(sparse_matrix, 1.0, 0);
   gds::utils::Set_Matrix_Diagonal(sparse_matrix, 2.0, 1);
+  gds::utils::Set_Matrix_Diagonal(sparse_matrix, 3.0, -1);
   std::cout << sparse_matrix << std::endl;
 }

@@ -20,11 +20,11 @@ void Set_Matrix_Diagonal(T& sparse_matrix, double constant, int distance = 0) {
     sparse_matrix *= constant;
   } else if (distance > 0) {
     for (int i = 0; i < size; ++i) {
-      if (i <= size - distance) sparse_matrix.insert(i, i + distance) = constant;
+      if (i < size - distance) sparse_matrix.insert(i, i + distance) = constant;
     }
   } else {
     for (int i = 0; i < size; ++i) {
-      if (i >= distance) sparse_matrix.insert(i, i + distance) = constant;
+      if (i >= abs(distance)) sparse_matrix.insert(i, i + distance) = constant;
     }
   }
 }
