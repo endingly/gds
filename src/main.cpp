@@ -1,6 +1,7 @@
-#include <stdexcept>
+#include "solver.hpp"
 
 int main(void) {
-  throw std::runtime_error("Hello, world!");
+  auto fluid  = std::make_shared<gds::Fluid>();
+  auto solver = std::make_shared<gds::Solver>(fluid);
   return 0;
 }

@@ -1,6 +1,7 @@
 #include "solver.hpp"
 
 #include "config.hpp"
+#include "utils.hpp"
 
 namespace gds {
 
@@ -53,32 +54,45 @@ void Solver::Calculate_De() {
 void Solver::Calculate_PossionEquation() {
   using namespace config;
   using ParticelType::e;
-
+  const auto &rho = this->fluid->n[e];
+  const auto &phi = this->fluid->phi;
   // 计算泊松方程
-  for (int i = 0, j = 0; j < x_cells, i < y_cells; i++, j++) {
-    auto &phi = this->fluid->phi(i, j);
-    auto &rho = this->fluid->n[e](i, j);
-    auto &Ex  = this->fluid->Ex(i, j);
-    auto &Ey  = this->fluid->Ey(i, j);
 
-    // phi = (rho * pow(dx, 2) + Ex * pow(dy, 2)) / (2 * (pow(dx, 2) + pow(dy, 2)));
+  /// 1. 直接构造系数矩阵 A
+  //  需要指出，这里的系数矩阵 A 是一个五对角线稀疏矩阵，因此我们可以使用稀疏矩阵的存储方式来存储它
+  auto A = ESM(x_cells * y_cells, x_cells * y_cells);
+  A.setIdentity();
+  // eq Math: A = 2(\frac{1}{dx^2} + \frac{1}{dy^2})
+  A *= 2 * ((1 / pow(this->fluid->dx, 2)) + (1 / pow(this->fluid->dy, 2)));
+  utils::Set_Matrix_Diagonal(A, -1 / pow(this->fluid->dx, 2), 1);
+  utils::Set_Matrix_Diagonal(A, -1 / pow(this->fluid->dx, 2), -1);
+  utils::Set_Matrix_Diagonal(A, -1 / pow(this->fluid->dy, 2), x_cells);
+  utils::Set_Matrix_Diagonal(A, -1 / pow(this->fluid->dy, 2), -x_cells);
+  /// 2. 构造方程右端项 f
+  //  2.1 首先构造矩阵 D，用于初始化 f
+  auto D = ESM(x_cells, x_cells);
+  D.setIdentity();
+  D *= (-(1 / pow(this->fluid->dx, 2)));
+  //  2.2 然后构造 f
+  Matrix f_element = (-(rho / config::EPSILON0));
+  f_element.topRows(1).array() += phi.topRows(1).array() / pow(this->fluid->dy, 2);
+  f_element.bottomRows(1).array() += phi.bottomRows(1).array() / pow(this->fluid->dy, 2);
+  f_element.leftCols(1) += D * phi.leftCols(1);
+  f_element.rightCols(1) += D * phi.rightCols(1);
+  // 2.3 将赋值完成的 f_element 转换为 VectorXd
+  auto f = Eigen::Map<Eigen::VectorXd>(f_element.data(), f_element.size());
+  /// 3. 求解方程
+  //  3.1 构造一个稀疏矩阵的求解器
+  Eigen::SimplicialLDLT<ESM> solver(A);
+  //  3.2 求解方程
+  Eigen::VectorXd phi_vector = solver.solve(f);
+
+  //  3.3 如果成功求解，则将结果赋值给 phi
+  if (solver.info() == Eigen::Success) {
+    this->fluid->phi = Eigen::Map<Matrix>(phi_vector.data(), x_cells, y_cells);
+  } else {
+    throw std::runtime_error("Solver::Calculate_PossionEquation: Failed to solve possion equation.");
   }
-  /// 1. 构造系数矩阵 D
-  /// 需要指出，这里的系数矩阵 D 是一个稀疏矩阵，因此我们可以使用稀疏矩阵的存储方式来存储它
-  Matrix D = Matrix::Identity(x_cells, x_cells) * (-1 / pow(this->fluid->dy, 2));
-  /// 2. 构造系数矩阵 C，此矩阵是一个三对角矩阵
-  Matrix C = Matrix::Identity(x_cells, x_cells) * 2 * (1 / pow(this->fluid->dx, 2) + 1 / pow(this->fluid->dy, 2));
-  for (int i = 0; i < x_cells; i++) {
-    if (i == 0)
-      C(i, i + 1) = -1 / pow(this->fluid->dx, 2);
-    else if (i == x_cells - 1)
-      C(i, i - 1) = -1 / pow(this->fluid->dx, 2);
-    else {
-      C(i, i - 1) = -1 / pow(this->fluid->dx, 2);
-      C(i, i + 1) = -1 / pow(this->fluid->dx, 2);
-    }
-  }
-  /// 3. 构造系数矩阵 f
 }
 
 }  // namespace gds
