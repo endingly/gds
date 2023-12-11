@@ -10,7 +10,8 @@ class Solver {
   std::unique_ptr<Fluid> fluid;
 
  public:
-  Solver(/* args */);
+  Solver();
+  Solver(std::unique_ptr<Fluid> fluid);
   ~Solver();
 
  private:

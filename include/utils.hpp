@@ -1,5 +1,7 @@
 #pragma once
-#include <matrix.hpp>
+#include <type_traits>
+
+#include "matrix.hpp"
 
 namespace gds::utils {
 
