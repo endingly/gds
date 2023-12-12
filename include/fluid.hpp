@@ -37,6 +37,7 @@ class Fluid {
   std::unordered_map<ParticelType, Matrix> Dy;      // y 方向粒子的扩散系数
   Matrix                                   Ix, Iy;  // x, y 方向的电流
   std::unordered_map<ParticelType, Matrix> S;       // 源项
+  std::unordered_map<ParticelType, Matrix> v_surf;  // 各粒子介质层表面速度
   Matrix                                   Sener;   // 能量源项
 
   // 下面两个量只有正离子才有
@@ -60,15 +61,14 @@ class Fluid {
   Matrix E, Ex, Ey;  // 电场强度
 
   double dx, dy;  // 网格尺寸
- public:
-  Fluid();
-  ~Fluid() = default;
 
  private:
   /// @brief 初始化边界条件
   void init();
 
  public:
+  Fluid();
+  ~Fluid() = default;
   friend class Solver;
 };
 

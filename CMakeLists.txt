@@ -4,7 +4,7 @@ project(gds VERSION 0.0.1 LANGUAGES CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-add_compile_options(/utf-8)
+add_compile_options(/utf-8 /openmp)
 
 option(GDS_BUILD_TESTS "Build tests" ON)
 option(GDS_BUILD_BENCHMARKS "Build benchmarks" ON)

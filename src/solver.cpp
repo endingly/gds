@@ -119,4 +119,25 @@ void Solver::Calculate_PossionEquation() {
   }
 }
 
+void Solver::Calculate_E() {
+  // 电势的梯度就是电场强度
+  const Matrix &phi = this->fluid->phi;
+  auto         &Ex  = this->fluid->Ex;
+  auto         &Ey  = this->fluid->Ey;
+
+  utils::Gradient_x(phi, Ex);
+  utils::Gradient_y(phi, Ey);
+
+}
+
+void Solver::Calculate_v_surf() {}
+
+void Solver::Advance() {
+  // 1. 计算电子迁移速度与扩散系数
+  Calculate_ue();
+  Calculate_De();
+  // 2. 计算泊松方程得到电势分布
+  Calculate_PossionEquation();
+}
+
 }  // namespace gds
