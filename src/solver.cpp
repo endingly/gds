@@ -4,6 +4,7 @@
 #include "utils.hpp"
 
 namespace gds {
+using namespace gds::config;
 
 Solver::Solver(/* args */) = default;
 
@@ -13,7 +14,6 @@ Solver::~Solver() = default;
 
 void Solver::Calculate_ue() {
   auto e = ParticelType::e;
-  using namespace config;
 
   // 计算粒子扩散速度
   auto         *Kte_s  = this->fluid->Kte.data();
@@ -120,17 +120,76 @@ void Solver::Calculate_PossionEquation() {
 }
 
 void Solver::Calculate_E() {
+  using namespace config;
   // 电势的梯度就是电场强度
   const Matrix &phi = this->fluid->phi;
   auto         &Ex  = this->fluid->Ex;
   auto         &Ey  = this->fluid->Ey;
+  auto         &E   = this->fluid->E;
 
   utils::Gradient_x(phi, Ex);
   utils::Gradient_y(phi, Ey);
+  // 计算合场强
+  for (int j = 0; j < E.cols(); j++)
+    for (int i = 0; i < E.rows(); i++) {
+      if ((j == 0 || j == E.cols() - 1) && i >= top_wall && i <= bot_wall)
+        E(i, j) = 0;
+      else
+        E(i, j) = sqrt(pow(Ex(i, j), 2) + pow(Ey(i, j), 2));
+    }
+}
+
+void Solver::Calculate_v_surf() {
 
 }
 
-void Solver::Calculate_v_surf() {}
+void Solver::Calculate_Gamma() {
+  using namespace gds::config;
+
+  // eq Math: \boldsymbol{\Gamma}_{\mathrm{i}}=-n_{\mathrm{i}} \mu_{\mathrm{i}} \mathbf{E}-D_{\mathrm{i}} \nabla
+  // n_{\mathrm{i}}
+  // 1. 计算除电子外的粒子的密度通量
+  for (int i = 0; i < static_cast<int>(ParticelType::e); i++) {
+    auto  pType = static_cast<ParticelType>(i);
+    auto &E     = this->fluid->E;
+    auto &n     = this->fluid->n[pType];
+    auto &ux    = this->fluid->ux[pType];
+    auto &uy    = this->fluid->uy[pType];
+    auto &Dx    = this->fluid->Dx[pType];
+    auto &Dy    = this->fluid->Dy[pType];
+
+    // 结果用后即焚，所以结果分配在栈堆上，缩减堆分配的时间
+    stack_matrix n_x     = stack_matrix::Zero();
+    stack_matrix n_y     = stack_matrix::Zero();
+    stack_matrix Gamma_x = stack_matrix::Zero();
+    stack_matrix Gamma_y = stack_matrix::Zero();
+
+    utils::Gradient_x(n, n_x);
+    utils::Gradient_y(n, n_y);
+    if ((int)pType < 10) {
+      Gamma_x = -Dx.array() * n_x.array();
+      Gamma_y = -Dy.array() * n_y.array();
+    } else {
+      auto sig = 0;
+      (int)pType < 20 ? sig = 1 : sig = -1;
+      Gamma_x = sig * n.array() * ux.array() * E.array() - Dx.array() * n_x.array();
+      Gamma_y = sig * n.array() * uy.array() * E.array() - Dy.array() * n_y.array();
+    }
+
+    // 根据上面两个方向的通量合成总通量
+    this->fluid->Gamma[pType] = (Gamma_x.pow(2) + Gamma_y.pow(2)).sqrt();
+  }
+}
+
+void Solver::Calculate_S() {
+  // eq Math: S_i = \sum(\alpha_i|\Gamma_i|)
+  // 1. 计算除电子外的粒子的带电粒子源项
+  for (int i = 10; i < static_cast<int>(ParticelType::e); i++) {
+    auto  pType = static_cast<ParticelType>(i);
+    auto &S     = this->fluid->S[pType];
+    
+  }
+}
 
 void Solver::Advance() {
   // 1. 计算电子迁移速度与扩散系数
@@ -138,6 +197,12 @@ void Solver::Advance() {
   Calculate_De();
   // 2. 计算泊松方程得到电势分布
   Calculate_PossionEquation();
+  // 3. 计算电场强度
+  Calculate_E();
+  // 4. 计算表面速度
+  Calculate_v_surf();
+  // 5. 计算粒子通量
+  Calculate_Gamma();
 }
 
 }  // namespace gds

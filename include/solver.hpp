@@ -28,6 +28,10 @@ class Solver {
   void Calculate_E();
   /// @brief 计算各粒子介质层表面速度
   void Calculate_v_surf();
+  /// @brief 计算各粒子的源项
+  void Calculate_S();
+  /// @brief 计算各粒子的密度通量
+  void Calculate_Gamma();
 };
 
 }  // namespace gds
