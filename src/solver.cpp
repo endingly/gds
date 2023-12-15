@@ -140,7 +140,12 @@ void Solver::Calculate_E() {
 }
 
 void Solver::Calculate_v_surf() {
-
+  // 首先明确一点，左右两侧为阴极，加负电压
+  for (int i = 10; i < (int)ParticelType::e; i++) {
+    auto  pType  = static_cast<ParticelType>(i);
+    auto &v_surf = this->fluid->v_surf[pType];
+    auto &ux     = this->fluid->ux[pType];
+  }
 }
 
 void Solver::Calculate_Gamma() {
@@ -177,7 +182,7 @@ void Solver::Calculate_Gamma() {
     }
 
     // 根据上面两个方向的通量合成总通量
-    this->fluid->Gamma[pType] = (Gamma_x.pow(2) + Gamma_y.pow(2)).sqrt();
+    this->fluid->Gamma[pType] = (Gamma_x.array().pow(2) + Gamma_y.array().pow(2)).sqrt();
   }
 }
 
@@ -187,7 +192,7 @@ void Solver::Calculate_S() {
   for (int i = 10; i < static_cast<int>(ParticelType::e); i++) {
     auto  pType = static_cast<ParticelType>(i);
     auto &S     = this->fluid->S[pType];
-    
+
   }
 }
 

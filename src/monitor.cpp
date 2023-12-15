@@ -10,8 +10,8 @@
 template <typename T, typename U>
   requires std::is_arithmetic_v<T> && (std::is_same_v<U, std::string> || std::is_same_v<U, const char*>)
 std::string to_color_string(T value, U unit) {
-  auto v = fmt::styled(value, fmt::fg(fmt::color::green) | fmt::bg(fmt::color::black));
-  auto u = fmt::styled(unit, fmt::fg(fmt::color::blue) | fmt::bg(fmt::color::black));
+  auto v = fmt::styled(value, fmt::fg(fmt::color::green));
+  auto u = fmt::styled(unit, fmt::fg(fmt::color::blue));
   return fmt::format("{0} {1}", v, u);
 }
 
