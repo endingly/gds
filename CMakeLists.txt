@@ -1,10 +1,9 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.27)
 
 project(gds VERSION 0.0.1 LANGUAGES CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-add_compile_options(/utf-8 /openmp)
 
 option(GDS_BUILD_TESTS "Build tests" ON)
 option(GDS_BUILD_BENCHMARKS "Build benchmarks" ON)
@@ -19,13 +18,17 @@ list(
 # target gds lib for benchmark and tests
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
+find_package(GSL REQUIRED)
 add_library(${PROJECT_NAME}_lib ${SOURCES})
 target_include_directories(${PROJECT_NAME}_lib PUBLIC include)
 target_link_libraries(
     ${PROJECT_NAME}_lib PUBLIC
     Eigen3::Eigen
     fmt::fmt
+    GSL::gsl 
+    GSL::gslcblas
 )
+target_compile_options(${PROJECT_NAME}_lib PUBLIC /utf-8 /openmp)
 
 # target gds executable
 find_package(Backward REQUIRED)
@@ -41,3 +44,6 @@ endif()
 if(GDS_BUILD_BENCHMARKS)
     add_subdirectory(benchmark)
 endif()
+
+# target parallel
+add_subdirectory(parallel)

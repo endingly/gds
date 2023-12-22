@@ -9,6 +9,7 @@
         "eigen3",
         "benchmark",
         "backward-cpp",
-        "fmt"
+        "fmt",
+        "gsl"
     ]
 }
