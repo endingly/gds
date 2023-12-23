@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-// TODO: 计算电离率之前需要完善对反应体系的构建
+// [ ]: 计算电离率之前需要完善对反应体系的构建
 
 namespace gds {
 using std::vector;

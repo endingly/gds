@@ -53,7 +53,7 @@ gds::Fluid::Fluid() {
   // 初始化电子的初始能量密度
   Kte = Matrix::Zero(x_cells, y_cells);
   // 初始化用于计算五点系数的耦合量
-  // TODO: 这里的耦合量或许可以删除
+  // [ ]: 这里的耦合量或许可以删除
   for (int i = 0; i < 8; i++) {
     Zx[ParticelType(i)] = Matrix::Zero(x_cells, y_cells);
     Zy[ParticelType(i)] = Matrix::Zero(x_cells, y_cells);
