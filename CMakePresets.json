@@ -6,7 +6,7 @@
       "displayName": "MSVC2022_x64",
       "description": "Sets Ninja generator, build and install directory",
       "generator": "Ninja",
-      "toolchainFile": "G:/soft/vcpkg/scripts/buildsystems/vcpkg.cmake",
+      "toolchainFile": "${env:VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
       "binaryDir": "${sourceDir}/out/build/${presetName}",
       "toolset": {
         "value": "host=x64",

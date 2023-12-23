@@ -39,41 +39,44 @@ void Set_Matrix_Diagonal(T& sparse_matrix, double constant, int distance = 0) {
 /// @param output_matrix 计算输出结果
 template <EigenMatrix T>
 void Gradient_x(const Matrix& input_matrix, T& output_matrix) {
-  // 并行算法，72*60，使用 6 个核心
-  // 由于矩阵按列优先存储，所以按列遍历，每个核心处理 10 列，每列 72 个元素，共 720 个元素
-  // #pragma omp parallel num_threads(6)
-  //   {
-  // int tn    = omp_get_thread_num();
-  // int j     = tn * 10;
-  // int limit = j + 10;
-  // for (; j < limit; j++) {
-  //   for (int i = 0; i < input_matrix.rows() - 1; i++) {
-  //     output_matrix(i, j) = (input_matrix(i, j + 1) - input_matrix(i, j)) / dx;
-  //   }
-  // }
-  // }
-  for (int j = 0; j < input_matrix.cols() - 1; j++) {
-    for (int i = 0; i < input_matrix.rows(); i++) {
-      output_matrix(i, j) = (input_matrix(i, j + 1) - input_matrix(i, j)) / gds::config::dx;
+  for (int i = 0; i < input_matrix.cols(); i++) {
+    auto out = output_matrix.col(i).array();
+    auto f   = input_matrix.col(i).array();
+    if (i == 0) {
+      auto l = input_matrix.col(i + 1).array();
+      out    = (l - f) / dx;
+    } else if (i == input_matrix.cols() - 1) {
+      auto p = input_matrix.col(i - 1).array();
+      out    = (f - p) / dx;
+    } else {
+      auto p = input_matrix.col(i - 1).array();
+      auto l = input_matrix.col(i + 1).array();
+      out = (l - p) / (2 * dx);
     }
   }
 }
 
 /// @brief 计算域 y 方向上的梯度
+/// @details 边界为两点前向差分，中间为三点中心差分
 /// @param input_matrix 计算输入矩阵
 /// @param output_matrix 计算输出结果
 template <EigenMatrix T>
 void Gradient_y(const Matrix& input_matrix, T& output_matrix) {
   // 为矩阵在 y 方向上计算梯度
-  for (int i = 1; i < input_matrix.rows(); i++) {
+  for (int i = 0; i < input_matrix.rows(); i++) {
     auto out = output_matrix.row(i).array();
     auto f   = input_matrix.row(i).array();
-    auto l   = input_matrix.row(i + 1).array();
-    if (i == 1 || i == input_matrix.rows()) {
-      out = l - f / dy;
+    if (i == 0) {
+      auto l = input_matrix.row(i + 1).array();
+      out    = (l - f) / dy;
+    } else if (i == input_matrix.rows() - 1) {
+      auto p = input_matrix.row(i - 1).array();
+      out    = (f - p) / dy;
     } else {
       auto p = input_matrix.row(i - 1).array();
-      out    = (-l + 4 * f - 3 * p) / 2 * dy;
+      auto l = input_matrix.row(i + 1).array();
+      // out    = (-l + 4 * f - 3 * p) / 2 * dy;
+      out = (l - p) / (2 * dy);
     }
   }
 }
