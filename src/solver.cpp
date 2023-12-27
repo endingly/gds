@@ -187,12 +187,13 @@ void Solver::Calculate_Gamma() {
 }
 
 void Solver::Calculate_S() {
-  // eq Math: S_i = \sum(\alpha_i|\Gamma_i|)
+  // eq Math: S_e = \sum S_i = \sum(K_i n_e N)
+  // 电子的源项是各粒子的源项之和
   // 1. 计算除电子外的粒子的带电粒子源项
   for (int i = 10; i < static_cast<int>(ParticelType::e); i++) {
     auto  pType = static_cast<ParticelType>(i);
     auto &S     = this->fluid->S[pType];
-
+    auto &n_e   = this->fluid->n[ParticelType::e];
   }
 }
 

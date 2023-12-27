@@ -11,12 +11,12 @@ class Logger {
   static inline bool        is_log_to_file_ = false;
 
  private:
-  static void WriteLog(LogLevel log_level, std::string log);
+  static void WriteLog(LogLevel log_level, const std::string& log);
 
  public:
-  static void Info(std::string log);
-  static void Warning(std::string log);
-  static void Error(std::string log);
+  static void Info(const std::string& log);
+  static void Warning(const std::string& log);
+  static void Error(const std::string& log);
 };
 
 }  // namespace gds::utils

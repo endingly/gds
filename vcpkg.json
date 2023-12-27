@@ -10,6 +10,7 @@
         "benchmark",
         "backward-cpp",
         "fmt",
-        "gsl"
+        "gsl",
+        "nlohmann-json"
     ]
 }

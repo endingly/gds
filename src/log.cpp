@@ -30,7 +30,7 @@ std::string get_date_time(const tm& t) {
                 t.tm_min, t.tm_sec);
 }
 
-void gds::utils::Logger::WriteLog(LogLevel log_level, std::string log) {
+void gds::utils::Logger::WriteLog(LogLevel log_level, const std::string& log) {
   auto  t       = std::chrono::system_clock::now();
   auto  ct      = std::chrono::system_clock::to_time_t(t);
   auto* time_tm = localtime(&ct);
@@ -48,8 +48,8 @@ void gds::utils::Logger::WriteLog(LogLevel log_level, std::string log) {
   }
 }
 
-void gds::utils::Logger::Info(std::string log) { WriteLog(LogLevel::INFO, log); }
+void gds::utils::Logger::Info(const std::string& log) { WriteLog(LogLevel::INFO, log); }
 
-void gds::utils::Logger::Warning(std::string log) { WriteLog(LogLevel::WARNING, log); }
+void gds::utils::Logger::Warning(const std::string& log) { WriteLog(LogLevel::WARNING, log); }
 
-void gds::utils::Logger::Error(std::string log) { WriteLog(LogLevel::ERROR, log); }
+void gds::utils::Logger::Error(const std::string& log) { WriteLog(LogLevel::ERROR, log); }

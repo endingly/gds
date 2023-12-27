@@ -1,10 +1,9 @@
 #pragma once
-#include <omp.h>
-
 #include <fstream>
-#include <type_traits>
+#include <optional>
 
 #include "matrix.hpp"
+
 namespace gds::utils {
 
 using namespace gds::config;
@@ -25,11 +24,15 @@ void Set_Matrix_Diagonal(T& sparse_matrix, double constant, int distance = 0) {
     sparse_matrix *= constant;
   } else if (distance > 0) {
     for (int i = 0; i < size; ++i) {
-      if (i < size - distance) sparse_matrix.insert(i, i + distance) = constant;
+      if (i < size - distance) {
+        sparse_matrix.insert(i, i + distance) = constant;
+      }
     }
   } else {
     for (int i = 0; i < size; ++i) {
-      if (i >= abs(distance)) sparse_matrix.insert(i, i + distance) = constant;
+      if (i >= abs(distance)) {
+        sparse_matrix.insert(i, i + distance) = constant;
+      }
     }
   }
 }
@@ -51,7 +54,7 @@ void Gradient_x(const Matrix& input_matrix, T& output_matrix) {
     } else {
       auto p = input_matrix.col(i - 1).array();
       auto l = input_matrix.col(i + 1).array();
-      out = (l - p) / (2 * dx);
+      out    = (l - p) / (2 * dx);
     }
   }
 }
@@ -97,5 +100,29 @@ bool Write_Matrix_To_CSV(const T& matrix, const std::string& file_name) {
   file.close();
   return true;
 }
+
+/// @brief 从字符串中定位某一子串
+/// @param str 指定要搜索的字符串
+/// @param substr 指定要搜索的子串
+/// @return `->` 符号的位置
+int find_sign(std::string_view str, std::string_view substr);
+
+/// @brief 从字符串中定位某一子串
+/// @param begin 指向开始位置的迭代器
+/// @param end 指向结束位置的迭代器
+/// @param substr 指定要搜索的子串
+/// @return
+int find_sign(const std::string::iterator& begin, const std::string::iterator& end, const std::string& substr);
+
+/// @brief 拆分字符串，内部存在拷贝开销
+/// @param str 需要拆分的字符串
+/// @param delim 指定拆分依据
+/// @return 返回拆分结果的视图
+std::optional<std::vector<std::string>> split(const std::string_view& str, const std::string_view& delim);
+
+/// @brief 去除字符串中的空格
+/// @param str 需要去除空格的字符串
+/// @return 返回去除空格后的字符串
+std::optional<std::string_view> remove_space(std::string_view str);
 
 }  // namespace gds::utils

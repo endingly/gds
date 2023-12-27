@@ -12,7 +12,7 @@ TEST(Init_Diagonal_Matrix, Normal) {
   //   EXPECT_EQ(sparse_matrix.coeff(2, 2), 1.0);
   //   EXPECT_EQ(sparse_matrix.coeff(3, 3), 1.0);
   //   EXPECT_EQ(sparse_matrix.coeff(4, 4), 1.0);
-  std::cout << sparse_matrix << std::endl;
+  std::cout << sparse_matrix << '\n';
 }
 
 TEST(Init_Diagonal_Matrix, Tri_Diag_Matrix) {
@@ -20,7 +20,7 @@ TEST(Init_Diagonal_Matrix, Tri_Diag_Matrix) {
   gds::utils::Set_Matrix_Diagonal(sparse_matrix, 1.0, 0);
   gds::utils::Set_Matrix_Diagonal(sparse_matrix, 2.0, 1);
   gds::utils::Set_Matrix_Diagonal(sparse_matrix, 3.0, -1);
-  std::cout << sparse_matrix << std::endl;
+  std::cout << sparse_matrix << '\n';
 }
 
 TEST(Utils, Gradient_x) {
@@ -55,4 +55,18 @@ TEST(Utils, Gradient_y) {
   gds::Matrix output_matrix = gds::Matrix::Zero(gds::config::x_cells, gds::config::y_cells);
   gds::utils::Gradient_y(input_matrix, output_matrix);
   gds::utils::Write_Matrix_To_CSV(output_matrix, "output_matrix.csv");
+}
+
+TEST(Utils, find_sign_in_string) {
+  std::string str = "H2 + O2 -> H2O";
+  EXPECT_EQ(str.substr(utils::find_sign(str, "->"), 2), "->");
+  EXPECT_EQ(str.substr(utils::find_sign(str.begin(), str.end(), "->"), 2), "->");
+}
+
+TEST(Utils, split_string) {
+  std::string str = "H2 + O2";
+  auto        res = utils::split(str, "+");
+  EXPECT_EQ(res->size(), 2);
+  EXPECT_EQ(res->at(0), "H2");
+  EXPECT_EQ(res->at(1), "O2");
 }
