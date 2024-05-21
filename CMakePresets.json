@@ -27,15 +27,14 @@
             }
         },
         {
-            "name": "mingw-ucrt64",
-            "displayName": "GCC 13.2.0 x86_64-w64-mingw32 (ucrt64)",
+            "name": "linux_gcc_x64",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
             "cacheVariables": {
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
-                "CMAKE_C_COMPILER": "gcc.exe",
-                "CMAKE_CXX_COMPILER": "g++.exe",
-                "VCPKG_TARGET_TRIPLET":"x64-mingw-dynamic"
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++",
+                "VCPKG_TARGET_TRIPLET":"x64-linux"
             },
             "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
         }

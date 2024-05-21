@@ -14,7 +14,6 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 list(
     REMOVE_ITEM SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/backward.cpp"
 )
 
 # target gds lib for benchmark and tests
@@ -29,6 +28,10 @@ target_link_libraries(
     fmt::fmt
     GSL::gsl
     GSL::gslcblas
+)
+set_target_properties(
+    ${PROJECT_NAME}_lib PROPERTIES
+    OUTPUT_NAME ${PROJECT_NAME}
 )
 
 if(MSVC)
