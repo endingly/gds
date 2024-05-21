@@ -1,30 +1,43 @@
 {
-  "version": 6,
-  "configurePresets": [
-    {
-      "name": "MSVC2022_x64_Debug",
-      "displayName": "MSVC2022_x64_Debug",
-      "description": "Sets Ninja generator, build and install directory",
-      "generator": "Ninja",
-      "toolchainFile": "G:/soft/vcpkg/scripts/buildsystems/vcpkg.cmake",
-      "binaryDir": "${sourceDir}/out/build/${presetName}",
-      "toolset": {
-        "value": "host=x64",
-        "strategy": "external"
-      },
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
-      },
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_CXX_COMPILER": "cl.exe"
-      },
-      "environment": {
-        "VCPKG_DEFAULT_TRIPLET": "x64-windows"
-      }
-    }
-  ]
+    "version": 6,
+    "configurePresets": [
+        {
+            "name": "MSVC2022_x64_Debug",
+            "displayName": "MSVC2022_x64_Debug",
+            "description": "Sets Ninja generator, build and install directory",
+            "generator": "Ninja",
+            "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "toolset": {
+                "value": "host=x64",
+                "strategy": "external"
+            },
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "CMAKE_CXX_COMPILER": "cl.exe"
+            },
+            "environment": {
+                "VCPKG_DEFAULT_TRIPLET": "x64-windows"
+            }
+        },
+        {
+            "name": "mingw-ucrt64",
+            "displayName": "GCC 13.2.0 x86_64-w64-mingw32 (ucrt64)",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_C_COMPILER": "gcc.exe",
+                "CMAKE_CXX_COMPILER": "g++.exe",
+                "VCPKG_TARGET_TRIPLET":"x64-mingw-dynamic"
+            },
+            "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+        }
+    ]
 }

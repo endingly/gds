@@ -8,7 +8,6 @@
         "gtest",
         "eigen3",
         "benchmark",
-        "backward-cpp",
         "fmt",
         "gsl",
         "nlohmann-json"
